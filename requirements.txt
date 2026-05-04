@@ -1,0 +1,22 @@
+# Core
+torch
+numpy
+librosa
+evaluate
+jiwer
+
+# HuggingFace stack (Whisper + Gemma)
+transformers
+datasets
+accelerate
+tensorboard
+
+# Gemma-3n SFT
+unsloth
+trl
+
+# NeMo (FastConformer)
+nemo_toolkit[asr]
+lightning
+omegaconf
+hydra-core
