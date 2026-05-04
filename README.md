@@ -7,7 +7,7 @@ multilingual Indian speech corpus, covering Whisper, FastConformer (NeMo) and Ge
 
 | File | Stack | What it does |
 | --- | --- | --- |
-| `finetune_whisper_small.py` | HF Transformers | Fine-tunes `whisper-small` on a single Vaani language / TTS-augmented data. |
+| `finetune_whisper_small.py` | HF Transformers | Fine-tunes `whisper-small` on a single Vaani language  |
 | `finetune_whisper_large.py` | HF Transformers | Multilingual fine-tuning of `whisper-large-v3-turbo` with a language-fallback map for non-Whisper languages. |
 | `finetune_gemma3n.py` | Unsloth + TRL | SFT of `gemma-3n-E2B-it` on multiple Vaani languages, formatted as audio chat-messages. |
 | `finetune_fastconformer.py` | NVIDIA NeMo | Hydra entrypoint to fine-tune a FastConformer Hybrid TDT-CTC BPE model. |
