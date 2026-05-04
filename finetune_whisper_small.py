@@ -29,6 +29,7 @@ print(f"Device Name: {torch.cuda.get_device_name(torch.cuda.current_device())}")
 
 modelTags = "openai/whisper-small"
 lan = "Hindi"
+VAANI_CONFIG = "Hindi"  # Vaani dataset language config (e.g. Hindi, Angika, Bengali)
 
 tokenizer = WhisperTokenizer.from_pretrained(modelTags, language=lan, task="transcribe")
 tokenizer.model_max_length = 448
@@ -113,11 +114,19 @@ class DataCollatorSpeechSeq2SeqWithPadding:
         return batch
 
 
-dataset_valid = load_dataset("audiofolder", data_dir="./dataset/coquiTTSout/valid")['train']
-dataset_test = dataset_valid.filter(filter_long_sequences).map(prepare_dataset, remove_columns=dataset_valid.column_names)
-
-dataset = load_dataset("audiofolder", data_dir="./dataset/coquiTTSout/train")['train']
-dataset_train = dataset.filter(filter_long_sequences).map(prepare_dataset, remove_columns=dataset.column_names)
+vaani = load_dataset("ARTPARK-IISc/Vaani-transcription-part", VAANI_CONFIG, token=access_token)
+dataset_train = (
+    vaani["train"]
+    .map(remove_special_characters)
+    .filter(filter_long_sequences)
+    .map(prepare_dataset, remove_columns=vaani["train"].column_names)
+)
+dataset_test = (
+    vaani["validation"]
+    .map(remove_special_characters)
+    .filter(filter_long_sequences)
+    .map(prepare_dataset, remove_columns=vaani["validation"].column_names)
+)
 
 model = WhisperForConditionalGeneration.from_pretrained(modelTags)
 model.generation_config.language = lan
@@ -130,7 +139,7 @@ data_collator = DataCollatorSpeechSeq2SeqWithPadding(
 )
 
 training_args = Seq2SeqTrainingArguments(
-    output_dir="./whisper-small-coquiTTS_alone",
+    output_dir=f"./whisper-small-vaani-{VAANI_CONFIG}",
     per_device_train_batch_size=8,
     gradient_accumulation_steps=4,
     learning_rate=1e-5,
